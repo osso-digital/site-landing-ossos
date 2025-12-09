@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const resposta = await fetch("http://104.131.117.83:8000/webhook", {
+    const resposta = await fetch("http://104.131.117.83:5000/webhook", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body),
