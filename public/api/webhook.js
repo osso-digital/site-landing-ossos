@@ -10,7 +10,16 @@ export default async function handler(req, res) {
       body: JSON.stringify(req.body),
     });
 
-    const dados = await resposta.json();
+    const texto = await resposta.text();
+
+    // 🔥 força conversão mesmo se o servidor retornar texto
+    let dados;
+    try {
+      dados = JSON.parse(texto);
+    } catch {
+      dados = { resposta_do_osso: texto };
+    }
+
     return res.status(200).json(dados);
 
   } catch (error) {

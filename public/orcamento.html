@@ -56,7 +56,6 @@ textarea{min-height:110px;resize:vertical}
   </div>
 
   <div class="grid">
-    <!-- FORM -->
     <div class="card">
       <form id="formOrcamento">
         <label>Nome Completo *</label>
@@ -86,7 +85,7 @@ textarea{min-height:110px;resize:vertical}
 
         <div class="row-two" style="margin-top:10px">
           <div>
-            <label>Tamanho (cm) — comprimento aproximado</label>
+            <label>Tamanho (cm)</label>
             <input class="input" name="tamanho" value="12" />
           </div>
           <div>
@@ -116,7 +115,6 @@ textarea{min-height:110px;resize:vertical}
               <option>Tórax</option>
               <option>Rosto</option>
               <option>Pescoço</option>
-              <option>Costas</option>
             </select>
           </div>
         </div>
@@ -136,12 +134,11 @@ textarea{min-height:110px;resize:vertical}
         </div>
 
         <div class="small" style="margin-top:12px">
-          Valor mínimo Tattoo: <span class="accent-small">R$ 150</span> (até 5cm²). Sessão 3h: <span class="accent-small">R$ 650</span> — Sessão 6h: <span class="accent-small">R$ 1.200</span>.
+          Valor mínimo Tattoo: <span class="accent-small">R$ 150</span>. Sessão 3h: <span class="accent-small">R$ 650</span> — Sessão 6h: <span class="accent-small">R$ 1.200</span>.
         </div>
       </form>
     </div>
 
-    <!-- RESULTADO -->
     <div class="card result-box" id="resultadoCard">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div><strong>Pré-visualização do Orçamento</strong><div class="small">Resultado em tempo real após envio</div></div>
@@ -160,7 +157,7 @@ textarea{min-height:110px;resize:vertical}
 </div>
 
 <script>
-const endpoint = "/api/webhook"; // AGORA ESTÁ CORRETO PARA A VERCEL
+const endpoint = "/api/webhook";
 
 const form = document.getElementById('formOrcamento');
 const resultado = document.getElementById('resultado');
@@ -211,6 +208,7 @@ form.addEventListener('submit', async (e) => {
                  </span>
                </div>`;
       html += `<div>Base: ${json.orcamento.servico_base}</div>`;
+
       if (json.orcamento.adicionais_aplicados?.length) {
         html += `<div style="margin-top:8px"><strong>Adicionais:</strong><ul>`;
         json.orcamento.adicionais_aplicados.forEach(a => {
