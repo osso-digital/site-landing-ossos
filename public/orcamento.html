@@ -6,7 +6,6 @@
 <title>Bone • Orçamento Instantâneo</title>
 
 <style>
-/* --- ESTILO PREMIUM (MANTIDO) --- */
 :root{
   --bg:#0b0b0c;
   --card:#0f0f10;
@@ -57,6 +56,7 @@ textarea{min-height:110px;resize:vertical}
   </div>
 
   <div class="grid">
+    <!-- FORM -->
     <div class="card">
       <form id="formOrcamento">
         <label>Nome Completo *</label>
@@ -65,74 +65,171 @@ textarea{min-height:110px;resize:vertical}
         <div class="form-row">
           <div style="flex:1">
             <label>Email *</label>
-            <input class="input" name="email" type="email" required />
+            <input class="input" name="email" type="email" required placeholder="seu@email.com" />
           </div>
           <div style="width:170px">
             <label>WhatsApp *</label>
-            <input class="input" name="whatsapp" required />
+            <input class="input" name="whatsapp" required placeholder="(11) 99999-9999" />
           </div>
         </div>
 
-        <label>Descreva sua ideia</label>
-        <textarea name="pergunta"></textarea>
+        <label>Serviço Desejado *</label>
+        <select class="input" name="servico" required>
+          <option value="Tatuagem">Tatuagem</option>
+          <option value="Cobertura">Cobertura</option>
+          <option value="Desenho Personalizado">Desenho Personalizado</option>
+          <option value="Piercing">Piercing</option>
+        </select>
 
-        <button class="btn-primary" type="submit" id="btnEnviar">Enviar para o Bone</button>
+        <label>Descreva sua ideia</label>
+        <textarea name="pergunta" placeholder="Conte-nos sobre estilo, tamanho, localização..."></textarea>
+
+        <div class="row-two" style="margin-top:10px">
+          <div>
+            <label>Tamanho (cm) — comprimento aproximado</label>
+            <input class="input" name="tamanho" value="12" />
+          </div>
+          <div>
+            <label>Complexidade</label>
+            <select class="input" name="complexidade">
+              <option>Simples</option>
+              <option selected>Média</option>
+              <option>Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row-two" style="margin-top:10px">
+          <div>
+            <label>Cor</label>
+            <select class="input" name="cor">
+              <option selected>Preto e Cinza</option>
+              <option>Colorida</option>
+            </select>
+          </div>
+          <div>
+            <label>Local no corpo</label>
+            <select class="input" name="local">
+              <option>Braço</option>
+              <option>Perna</option>
+              <option>Costas</option>
+              <option>Tórax</option>
+              <option>Rosto</option>
+              <option>Pescoço</option>
+              <option>Costas</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Opção de Sessão</label>
+          <select class="input" name="sessao">
+            <option value="Sessão única">Sessão única</option>
+            <option value="3h">Sessão 3h (mínimo)</option>
+            <option value="6h">Sessão 6h (fechamento)</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <button class="btn-primary" type="submit" id="btnEnviar">Enviar para o Bone</button>
+          <button type="button" id="btnLimpar" class="badge" onclick="document.getElementById('formOrcamento').reset()">Limpar</button>
+        </div>
+
+        <div class="small" style="margin-top:12px">
+          Valor mínimo Tattoo: <span class="accent-small">R$ 150</span> (até 5cm²). Sessão 3h: <span class="accent-small">R$ 650</span> — Sessão 6h: <span class="accent-small">R$ 1.200</span>.
+        </div>
       </form>
     </div>
 
-    <div class="card result-box">
-      <strong>Pré-visualização</strong>
-      <div id="resultado" style="margin-top:12px;color:#ccc">
-        Preencha o formulário e clique em Enviar.
+    <!-- RESULTADO -->
+    <div class="card result-box" id="resultadoCard">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong>Pré-visualização do Orçamento</strong><div class="small">Resultado em tempo real após envio</div></div>
+        <div class="badge">API: <span id="apiStatus" style="color:var(--accent);font-weight:700">ok</span></div>
       </div>
 
+      <div id="resultado" style="margin-top:16px">Preencha o formulário e clique em <strong>Enviar para o Bone</strong>.</div>
+
       <div class="kv">
-        <div class="k">ID do atendimento</div>
-        <div class="v" id="idAtendimento">—</div>
+        <div class="k">ID do atendimento</div><div class="v" id="idAtendimento">—</div>
       </div>
     </div>
   </div>
+
+  <div class="footer">© Bone • Sistema de Orçamentos — Teste Local</div>
 </div>
 
 <script>
-const endpoint = "/api/webhook";
+const endpoint = "/api/webhook"; // AGORA ESTÁ CORRETO PARA A VERCEL
 
-document.getElementById("formOrcamento").addEventListener("submit", async (e) => {
+const form = document.getElementById('formOrcamento');
+const resultado = document.getElementById('resultado');
+const apiStatus = document.getElementById('apiStatus');
+const idAtendimento = document.getElementById('idAtendimento');
+const btnEnviar = document.getElementById('btnEnviar');
+
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const dados = Object.fromEntries(new FormData(e.target).entries());
+  btnEnviar.disabled = true;
+  btnEnviar.textContent = "Enviando...";
+  resultado.innerHTML = "Enviando e calculando...";
+  apiStatus.textContent = "ok";
 
-  const btn = document.getElementById("btnEnviar");
-  const resultado = document.getElementById("resultado");
-
-  btn.disabled = true;
-  btn.textContent = "Enviando...";
-
-  resultado.innerHTML = "Processando...";
+  const dados = Object.fromEntries(new FormData(form).entries());
+  if (!dados.tamanho) dados.tamanho = 12;
 
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados),
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify(dados)
     });
 
+    if (!res.ok) {
+      const text = await res.text();
+      resultado.innerHTML =
+        `<div style="color:#ff6a00;font-weight:700">Erro ao comunicar com a API: ${res.status} — ${text}</div>`;
+      apiStatus.textContent = "erro";
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = "Enviar para o Bone";
+      return;
+    }
+
     const json = await res.json();
+    idAtendimento.textContent = json.id_atendimento || "—";
 
-    document.getElementById("idAtendimento").textContent =
-      json.id_atendimento || "—";
+    let html =
+      `<div><strong>Resposta do Bone</strong></div>
+       <div style="margin-top:10px;white-space:pre-wrap">${json.resposta_do_osso || json.resposta}</div>`;
 
-    resultado.innerHTML = `
-      <strong>Resposta do Bone:</strong><br><br>
-      ${json.resposta_do_osso || "Sem resposta"}
-      <br><br>
-      <strong>Orçamento:</strong><br>
-      ${json.orcamento?.valor_final || "—"}
-    `;
+    if (json.orcamento) {
+      html += `<hr style="border-color: rgba(255,255,255,0.03);margin:12px 0">`;
+      html += `<div><strong>Orçamento Gerado</strong></div>`;
+      html += `<div style="margin-top:8px">Valor:
+                 <span style="color:var(--accent);font-weight:800">
+                   ${json.orcamento.valor_final}
+                 </span>
+               </div>`;
+      html += `<div>Base: ${json.orcamento.servico_base}</div>`;
+      if (json.orcamento.adicionais_aplicados?.length) {
+        html += `<div style="margin-top:8px"><strong>Adicionais:</strong><ul>`;
+        json.orcamento.adicionais_aplicados.forEach(a => {
+          html += `<li>${a}</li>`;
+        });
+        html += `</ul></div>`;
+      }
+    }
+
+    resultado.innerHTML = html;
+    apiStatus.textContent = "ok";
+
   } catch (err) {
-    resultado.innerHTML = `<span style="color:#ff6a00">Erro: ${err.message}</span>`;
+    resultado.innerHTML =
+      `<div style="color:#ff6a00;font-weight:700">Erro ao comunicar com a API: ${err.message}</div>`;
+    apiStatus.textContent = "erro";
   } finally {
-    btn.disabled = false;
-    btn.textContent = "Enviar para o Bone";
+    btnEnviar.disabled = false;
+    btnEnviar.textContent = "Enviar para o Bone";
   }
 });
 </script>
