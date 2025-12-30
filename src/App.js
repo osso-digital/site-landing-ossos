@@ -123,7 +123,7 @@ const HeroSection = () => {
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
             <a
-              href="https://wa.me/5511939369778?text=Olá! Gostaria de agendar uma consulta"
+              href="https://bone-painel.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-orange-600 hover:bg-orange-700 text-white px-10 py-5 rounded-lg font-bold text-xl transition-all duration-300 transform hover:scale-105 shadow-xl"
