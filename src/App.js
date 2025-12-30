@@ -122,14 +122,30 @@ const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <a
-              href="https://wa.me/5511939369778?text=Olá! Gostaria de agendar uma consulta"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-orange-600 hover:bg-orange-700 text-white px-10 py-5 rounded-lg font-bold text-xl transition-all duration-300 transform hover:scale-105 shadow-xl"
-              data-testid="hero-whatsapp-button"
-            >
-              <Phone className="inline-block mr-3" size={24} />
+  {/* BOTÃO WHATSAPP */}
+  <a
+    href="https://wa.me/5511939369778?text=Olá! Gostaria de agendar uma consulta"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-orange-600 hover:bg-orange-700 text-white px-10 py-5 rounded-lg font-bold text-xl transition-all duration-300 transform hover:scale-105 shadow-xl"
+    data-testid="hero-whatsapp-button"
+  >
+    <Phone className="inline-block mr-3" size={24} />
+    AGENDAR CONSULTA
+  </a>
+
+  {/* BOTÃO ORÇAMENTO ONLINE (BONE) */}
+  <a
+    href="https://bone-panel.vercel.app"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-10 py-5 rounded-lg font-bold text-xl transition-all duration-300 transform hover:scale-105 shadow-xl"
+    data-testid="hero-orcamento-button"
+  >
+    💰 ORÇAMENTO ONLINE
+  </a>
+</div>
+
               AGENDAR CONSULTA
             </a>
             <a
